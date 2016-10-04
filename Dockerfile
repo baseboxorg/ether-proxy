@@ -2,6 +2,8 @@ FROM golang:latest
 
 MAINTAINER BaseBoxOrg anybucket@gmail.com
 
+EXPOSE 8080
+
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update && \
@@ -28,14 +30,9 @@ WORKDIR /app
 
 RUN go build -o ether-proxy .
 
-CMD ["/app/ether-proxy"]
+RUN useradd ether-proxy && echo "ether-proxy:ether-proxy" | chpasswd
+RUN chown -R ether-proxy:ether-proxy /app
+USER ether-proxy
 
-
-
-
-# Expose the application on port 8080
-EXPOSE 8080
-
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN apt-get update
+ENTRYPOINT ["/app/ether-proxy"]
+CMD [""]
